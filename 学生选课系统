@@ -1,0 +1,245 @@
+#include <stdio.h>
+#include <string.h>
+
+#define a number
+#define b name
+#define c nature
+#define d totalTime
+#define e time1
+#define f Time2
+#define g credit
+#define h term
+
+int allChoose();			//总菜单
+int input();			//1.课程信息录入
+int output(int m,int n);	//课程信息输出函数
+int allOutput();			//2.全部课程显示
+int search();			//3.课程信息查询
+int change();			//4.课程信息修改
+int choose();			//5.选修课程选择
+int information();		//6.学生课程信息查看
+int back();				//返回总菜单功能
+
+struct course{			//建立结构体
+	int number;
+	char name[20],nature[16];
+	int totalTime,time1,Time2;
+	float credit;
+	char term[10];
+	int t;				//用于标记是否被学生选择
+}class[10];				//最多录入10个课程
+
+int i=0;				//使结构体添加从class[0]开始
+
+int main(){
+	printf("+++++++++++++++++学生选修课程系统++++++++++++++++++++++++\n");
+	allChoose();
+}
+
+/*操作选择总菜单*/
+int allChoose(){
+	int flag;
+	printf("\n---->总菜单<-----\n");
+	printf("请选择要执行的操作:\n");
+	printf("1.课程信息录入\n");
+	printf("2.课程信息显示\n");
+	printf("3.课程信息查询\n");
+	printf("4.课程信息修改\n");
+	printf("5.选修课程选择\n");
+	printf("6.学生课程信息\n");
+	printf("请选择(数字1/2/3/4/5/6):");
+L1:	scanf("%d",&flag);
+	switch(flag){		//输入的数字决定应该执行的函数
+		case 1:input();break;		//1.课程信息录入
+		case 2:allOutput();break;	//2.全部课程显示
+		case 3:search();break;		//3.课程信息查询
+		case 4:change();break;		//4.课程信息修改
+		case 5:choose();break;		//5.选修课程选择
+		case 6:information();break;	//6.学生课程信息查看
+		default:{printf("错误输入,请重新输入:");goto L1;}
+	}
+	return 0;
+}
+
+/*1.课程信息录入*/
+int input(){
+	int n=0;
+	printf("\n1.课程信息录入\n");
+	printf("添加新的课程:\n");
+	printf("输入课程编号:");
+	scanf("%d",&class[i].a);		//课程编号
+	printf("输入课程名称:");
+	scanf("%s",class[i].b);		//课程名称
+	printf("输入课程性质:");
+	scanf("%s",class[i].c);		//课程性质
+	printf("输入总学时:");
+	scanf("%d",&class[i].d);		//总学时
+	printf("输入授课学时:");
+	scanf("%d",&class[i].e);		//授课学时
+	printf("输入实验/上机学时:");
+	scanf("%d",&class[i].f);		//实验/上机学时
+	printf("输入学分:");
+	scanf("%f",&class[i].g);		//学分
+	printf("输入开课学期:");
+	scanf("%s",class[i].h);		//开课学期
+	class[i].t=0;				//默认t为0,即未被学生选择
+	printf("录入成功,");
+	i++;
+	back();				//返回总菜单
+	return 0;
+}
+
+/*课程信息输出函数*/
+int output(int m,int n){
+//	printf("课程编号|	课程名称	| 	课程性质 	|	总学时	| 授课学时 | 实验/上机学时 | 学分 | 开课学期	|	选择状态\n");
+	for(m=m;m<n;m++)			//循环输出目标课程
+	{
+		printf("课程编号:%d|名称:%s |性质:%s |总学时:%d|授课学时:%d|实验/上机学时:%d|学分:%.1f|开课学期:%s\n",class[m].a,class[m].b,class[m].c,class[m].d,class[m].e,class[m].f,class[m].g,class[m].h);
+	}
+//	printf("\n");
+	return 0;
+}
+
+/*2.全部课程显示*/
+int allOutput(){
+	printf("\n2.全部课程显示\n\n");
+	output(0,i);			//控制output中for循环次数使全部课程显示
+	printf("显示成功!\n");
+	back();				//返回总菜单
+	return 0;
+}
+
+/*3.课程信息查询*/
+int search(){
+	int m,num,j;
+	char name[20],nature[16];
+	printf("\n3.课程信息查询\n");
+L2:	printf("请输入要查询的方式(1.课程编号/2.课程名称/3.课程性质):");
+	scanf("%d",&m);
+	if(m==1)				//1.课程编号查询
+	{
+		printf("1.根据课程编号查询\n");
+		printf("请输入课程编号:");
+		scanf("%d",&num);
+		for(j=0;j<i;j++)
+		{
+			if(num==class[j].a)			//将a与已有课程的编号number(已用a代替)比较
+				output(j,j+1);			//控制输出函数只输出class[j]的信息
+		}
+	}
+	else if(m==2)			//2.课程名称查询
+	{
+		printf("2.根据课程名称查询\n");
+		printf("请输入课程名称:");
+		scanf("%s",name);
+		for(j=0;j<i;j++)
+			{
+				if(!strcmp(name,class[j].b))		//将a与已有课程的名字name(已用b代替)比较
+					output(j,j+1);				//控制输出函数只输出class[j]的信息
+			}
+	}
+	else if(m==3)			//3.课程性质查询
+	{
+		printf("3.根据课程性质查询\n");
+		printf("请输入课程性质:");
+		scanf("%s",nature);
+		for(j=0;j<i;j++)
+			{
+				if(!strcmp(nature,class[j].c))		//将a与已有课程的性质nature(已用c代替)比较
+					output(j,j+1);					//控制输出函数只输出class[j]的信息
+			}
+	}
+	else				//当输入的数字不是1/2/3时重新输入
+		goto L2;
+	back();				//返回总菜单
+	return 0;
+}
+
+/*4.课程信息修改*/
+int change(){
+	int j,n;
+	printf("\n4.课程信息修改\n");
+	printf("请输入要修改的课程编号:");
+	scanf("%d",&n);
+	for(j=0;j<i;j++)
+		{
+			if(n==class[j].a)			//将n与已有课程的编号number(已用a代替)比较
+			{
+				output(j,j+1);			//控制输出函数只输出class[j]的信息
+				break;
+			}
+		}
+	printf("输入新的课程编号:");
+	scanf("%d",&class[j].a);			//新的课程编号
+	printf("输入新的课程名称:");
+	scanf("%s",class[j].b);			//新的课程名称
+	printf("输入新的课程性质:");
+	scanf("%s",class[j].c);			//新的课程性质
+	printf("输入新的总学时:");
+	scanf("%d",&class[j].d);			//新的总学时
+	printf("输入新的授课学时:");
+	scanf("%d",&class[j].e);			//新的授课学时
+	printf("输入新的实验/上机学时:");
+	scanf("%d",&class[j].f);			//新的实验/上机学时
+	printf("输入新的学分:");
+	scanf("%f",&class[j].g);			//新的学分
+	printf("输入新的开课学期:");
+	scanf("%s",class[j].h);			//新的开课学期
+	class[j].t=0;					//t依然为0,即未被学生选择
+	printf("修改成功!\n");
+	back();				//返回总菜单
+	return 0;
+}
+
+/*5.选修课程选择*/
+int choose(){
+	int j,n=0,k;
+	printf("\n2.选修课程显示\n");
+	output(0,i);							//控制output中for循环次数使全部课程显示
+	printf("请输入要选择的课程编号:");
+	scanf("%d",&n);
+	for(j=0;j<i;j++)
+		{
+			if(n==class[j].a)
+				{
+				if(class[j].t==1)			//如果t=1说明该课程已经选择
+					printf("课程已选");
+				else
+					{
+						class[j].t=1;		//用t=1等于表示学生已选
+						printf("课程%d选择成功\n\n",n);
+						break;
+					}
+				}
+		}
+	back();				//返回总菜单
+	return 0;
+}
+
+/*6.学生课程信息查看*/
+int information(){
+	int j;
+	printf("\n4.学生课程信息\n");
+	printf("-->已选课程<--\n");
+	for(j=0;j<i;j++)
+		{
+			if(class[j].t==1)		//判断结构体中t是否为1
+				output(j,j+1);		//控制输出函数只输出class[j]的信息
+		}
+	printf("显示成功!\n");
+	back();					//返回总菜单
+	return 0;
+}
+
+/*返回总菜单*/
+int back(){
+	int t;
+	printf("\n");
+	printf("返回总菜单(请输入1):");
+	scanf("%d",&t);
+	if(t==1)
+		allChoose();			//返回总菜单
+	else
+		back();
+	return 0;
+}
