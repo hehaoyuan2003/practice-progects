@@ -1,0 +1,129 @@
+/*//朴素的模式匹配算法：
+#include<stdio.h>
+#include<string.h>
+
+int Index(char*s,char*t);
+
+int main()
+{
+    int n;
+    char*a="abcabcdabcde";
+    char*b="abcde";
+    n=Index(a,b);
+    printf("%d",n);
+    return 0;
+}
+//该函数返回子串T在主串S中的的位置（从第几个字符开始）
+//若主串S中不存在子串T，则返回0；
+int Index(char*S,char*T)
+{
+    int lengthS=strlen(S);
+    int lengthT=strlen(T);      //用于计算字符串的长度
+    int i=1;      //记录主串S当前位置的下标值
+    int j=1;      //记录子串T当前位置的下标值
+
+    while(i<=lengthS&&j<=lengthT){
+        if(S[i-1]==T[j-1]){      //若两个字符相等，则后移一位继续匹配
+            i++;
+            j++;
+        }else{
+            i=i-j+2;        //若不相等，i退回到上轮匹配首位的下一位
+            j=1;            //j退回到字符串T的首位
+        }
+    }
+
+    if(j>lengthT){
+        return i-lengthT;//返回子串T在主串S中的的位置（从第几个字符开始）
+    }else{
+        return 0;
+    }
+
+}*/
+
+
+//KMP模式匹配算法
+#include<stdio.h>
+#include<stdlib.h>
+#include<string.h>
+
+void Getnext(char*T,int *next);
+void Getnewnext(char*T,int *newnext);
+int Indexkmp(char*S,char*T);
+
+int main()
+{
+    char*a="abcabcdabcde";
+    char*b="abcde";
+    int n;
+
+    n=Indexkmp(a,b);
+    printf("%d",n);
+    
+    return 0;
+}
+//通过计算得到子串T的next数组
+void Getnext(char*T,int *next)
+{
+    int length=strlen(T);
+    int i=1;
+    int k=0;
+    next[1]=0;
+
+    while(i<length){
+        if(k==0||T[i]==T[k]){
+            i++;
+            k++;
+            next[i]=k;
+        }else{
+            k=next[k];
+        }
+    }
+}
+//该函数返回子串T在主串S中的的位置（从第几个字符开始）
+//若主串S中不存在子串T，则返回0；
+int Indexkmp(char*S,char*T)
+{
+    int i=1;                     //记录主串S当前位置的下标值
+    int j=1;                     //记录子串T当前位置的下标值
+    int lengthS=strlen(S);       
+    int lengthT=strlen(T);       //计算字符串的长度
+    int next[lengthT+1];
+
+    Getnext(T,next);             //得到子串的next数组
+
+    while(i<=lengthS&&j<=lengthT){ //当i小于主串S的长度，j小于子串T的长度时循环继续
+        if(j==0||S[i-1]==T[j-1]){  //若两个字符相等或k=0时，后移一位继续匹配
+            i++;
+            j++;
+        }else{
+            j=next[j];             //j回溯到合适的位置，i不回溯
+        }
+    }
+    if(j>lengthT){
+        return i-lengthT;        //返回子串T在主串S中的的位置（从第几个字符开始）
+    }else{
+        return 0;                //若不存在则返回0
+    }
+}
+
+//改进后的KMP算法的next数组值的计算
+void Getnewnext(char*T,int *newnext)
+{
+    int i=1;
+    int k=0;
+    int length=strlen(T);
+    newnext[1]=0;
+    while(i<length){
+        if(k==0||T[i]==T[k]){      //T[i]表示后缀的单个字符，T[k]表示前缀的单个字符
+            i++;
+            k++;
+            if(T[i]!=T[k]){        //若当前字符与前缀字符不同，
+                newnext[i]=k;      //当前的k为newnext在i位置的值
+            }else{
+                newnext[i]=newnext[k];//如果与前缀字符相同，则将前缀字符的newnext值赋给newnext在i位置的值
+            }
+        }else{
+            k=newnext[k];          //若字符不同，则k值回溯
+        }
+    }
+}
