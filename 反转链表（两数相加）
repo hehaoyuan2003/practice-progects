@@ -1,0 +1,103 @@
+#include<stdlib.h>
+#include<stdio.h>
+
+struct ListNode* reversel(struct ListNode* head);
+struct ListNode* addTwoNumbers(struct ListNode* l1, struct ListNode* l2);
+
+struct ListNode {
+	int val;
+	struct ListNode* next;
+};
+
+int main()
+{
+	struct ListNode* head1,*head2, * p, * q;
+
+	head1 = (struct ListNode*)malloc(sizeof(struct ListNode));
+    head2 = (struct ListNode*)malloc(sizeof(struct ListNode));
+
+	q = head1;
+	for (int i = 0; i < 4; i++) {
+		p = (struct ListNode*)malloc(sizeof(struct ListNode));
+		p->next = NULL;
+		scanf("%d", &p->val);
+		q->next = p;
+		q = p;
+	}
+
+    q = head2;
+    for (int i = 0; i < 4; i++) {
+        p = (struct ListNode*)malloc(sizeof(struct ListNode));
+        p->next = NULL;
+        scanf("%d", &p->val);
+        q->next = p;
+        q = p;
+    }
+
+    head1->next = reversel(head1->next);
+    head2->next = reversel(head2->next);
+
+    q = addTwoNumbers(head1->next, head2->next);
+
+    q = reversel(q);
+
+    while (q) {
+        printf("%4d", q->val);
+        q = q->next;
+    }
+
+	return 0;
+}
+
+struct ListNode* reversel(struct ListNode* head) {
+	struct ListNode* t, * p, * q;
+	q = head;
+	p = head->next;
+	while (p) {
+		t = p->next;
+		p->next = q;
+		q = p;
+		p = t;
+	}
+	head->next = NULL;
+	return q;
+}
+
+struct ListNode* addTwoNumbers(struct ListNode* l1, struct ListNode* l2) {
+    struct ListNode* head = NULL;
+    struct ListNode* p, * q, * t;
+    t = (struct ListNode*)malloc(sizeof(struct ListNode));
+    head = t;
+    q = t;
+    t->next = NULL;
+    int num1 = 0, num2 = 0, sum, count = 0;
+    while (l1 || l2) {
+        num1 = 0; num2 = 0;
+        if (l1) {
+            num1 = l1->val;
+            l1 = l1->next;
+        }if (l2) {
+            num2 = l2->val;
+            l2 = l2->next;
+        }
+        sum = num1 + num2 + count;
+        p = (struct ListNode*)malloc(sizeof(struct ListNode));
+        p->val = sum % 10;
+        q->next = p;
+        p->next = NULL;
+        q = p;
+        if (sum >= 10) {
+            count = 1;
+        }
+        else {
+            count = 0;
+        }
+    }
+    if (count == 1) {
+        p = (struct ListNode*)malloc(sizeof(struct ListNode));
+        p->val = 1;
+        q->next = p;
+        p->next = NULL;
+    }
+    return t->next;
+}
